@@ -18,6 +18,11 @@ namespace EDJournalQueue.Extensions
             return (T)ret;
         }
 
+        public static IEnumerable<T> DistinctBy<T, TKey>(this IEnumerable<T> items, Func<T, TKey> property)
+        {
+            return items.GroupBy(property).Select(x => x.First());
+        }
+
         public static object Populate(this JObject journalEntry)
         {
             object entry = null;
