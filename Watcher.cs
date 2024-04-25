@@ -26,6 +26,17 @@ namespace EDJournalQueue
         private List<string> _activeJournalFilePaths;
         private List<FileSystemWatcher> _watchers;
 
+        protected virtual void OnJournalEntryQueued(Object obj)
+        {
+            EventHandler<Object> handler = JournalEntryQueued;
+            if (handler != null)
+            {
+                handler(this, obj);
+            }
+        }
+
+        public event EventHandler<Object> JournalEntryQueued;
+
 
         #endregion
 
@@ -243,6 +254,7 @@ namespace EDJournalQueue
                 JournalEntryQueue[commanderName] = new ConcurrentQueue<object>();
             }
             JournalEntryQueue[commanderName].Enqueue(journalEntry);
+            OnJournalEntryQueued(journalEntry);
         }
 
         private async Task ReadJournal(string journalFilePath, bool preload = false)
